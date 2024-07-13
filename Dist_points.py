@@ -97,6 +97,6 @@ if __name__ == "__main__":
     EF = Vector(E, F)
     AD = Vector(A, D)
     vector_a = AB - CD
-    print(AB, AB.long_vector(), vector_a, vector_a.long_vector())
+    print(AB + EF)
 
    
