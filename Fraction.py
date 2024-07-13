@@ -43,12 +43,17 @@ class Fraction(object):
 
     def __add__(self, other):
         "Сложение между экземплярами Fraction() или между экземплярами Fraction() и int или float"
-        if type(other and self) is Fraction:
+        if type(self) is Fraction and type(other) is Fraction:
             pass
         elif type(other) is int:
             other = Fraction(other, 1)
         elif type(other) is float:
-            pass
+            list_div_num = str(other).split(".")
+            len_num = len(list_div_num[-1])
+            new_dec_denominator = int("1" + len_num * "0")
+            new_dec_numerator = int(list_div_num[0] + list_div_num[1])
+            other = Fraction(new_dec_numerator, new_dec_denominator)
+            print(other)
         try:
             new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
             #нахождение неприведенного числителя
@@ -69,11 +74,11 @@ class Fraction(object):
 
         
 if __name__ == "__main__":       
-    var1 = Fraction(5, 24)
-    var2 = Fraction(3, 4)
+    var1 = Fraction(1, 2)
+    var2 = Fraction(1, 5)
     var3 = Fraction(75, 255)
     var4 = Fraction(60, 510)
     var5 = Fraction(501, 50)
     # var3.fraction_reduction()
-    print(var1 + var4 + var5)
+    print(var1 + var2)
     # print(var5.improper_fraction_reduction())
