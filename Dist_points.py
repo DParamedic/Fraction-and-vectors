@@ -1,5 +1,6 @@
 from functools import total_ordering
 
+
 class Point(object):
     "Точка, имеющая три координаты. Объект неизменяем."
     def __init__(self, x=None, y=None, z=None):
@@ -45,6 +46,22 @@ class Point(object):
         third_sect = ((B.x - C.x)**2 + (B.y - C.y)**2 + (B.z - C.z)**2)**0.5
         parametr = first_sect + sec_sect + third_sect
         return (parametr / 2 * (parametr / 2 - first_sect) * (parametr / 2 - sec_sect) * (parametr / 2 - third_sect)) ** 0.5
+    
+
+class Section(object):
+    def __init__(self, point1=Point(), point2=Point()):
+        self.point1 = point1
+        self.point2 = point2
+    def __add__(self, other):
+        return self.point1.distance(self.point2) + other.point1.distance(other.point2)
+    def __str__(self):
+        return self.point1.distance(self.point2)
+    def __sub__(self, other):
+        return self.point1.distance(self.point2) - other.point1.distance(other.point2)
+    
+class Directional_section(Section):
+    pass
+    
 
 @total_ordering
 class Vector(object):
@@ -82,21 +99,21 @@ class Vector(object):
             return self.__mul__(other=other)
                 
 
-def decor_fract(func):
-    pass
-if __name__ == "__main__":
-    A = Point(-1, 4, 6)
-    B = Point(4, 7, 0)
-    C = Point(5, 7, 8)
-    D = Point(9, 8, -3)
-    E = Point(5, 34, -9)
-    F = Point(0, -9, -8)
+# def decor_fract(func):
+#     pass
+# if __name__ == "__main__":
+#     A = Point(-1, 4, 6)
+#     B = Point(4, 7, 0)
+#     C = Point(5, 7, 8)
+#     D = Point(9, 8, -3)
+#     E = Point(5, 34, -9)
+#     F = Point(0, -9, -8)
 
-    AB = Vector(A, B)
-    CD = Vector(C, D)
-    EF = Vector(E, F)
-    AD = Vector(A, D)
-    vector_a = AB - CD
-    print(AB + EF)
+#     AB = Vector(A, B)
+#     CD = Vector(C, D)
+#     EF = Vector(E, F)
+#     AD = Vector(A, D)
+#     vector_a = AB - CD
+#     print(AB + EF)
 
    
