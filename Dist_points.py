@@ -15,7 +15,7 @@ class Point(object):
         dist_y = other.y - self.y
         dist_z = other.z - self.z
         return (dist_x, dist_y, dist_z)
-    def __add__(self, dist_other=None):
+    def distance_increment(self, dist_other=None):
         "Сложение производится между объектом Point() и кортежем, хранящим в себе информацию о смещении координат или между обЪектом Point() и целым числом n -- в этом случае все координаты сдвигаются на n."
         if type(dist_other) is tuple and len(dist_other) == 3:
             other = Point()
@@ -27,8 +27,7 @@ class Point(object):
             other.y = self.y + dist_other
             other.z = self.z + dist_other
         else:
-            #реализовать механизм Exception
-            pass
+            raise TypeError(f"Неподдерживаемый аргумент {type(dist_other)} для перемещения экземпляра __class__.Point()")
         return other
     def change_x(self, x_coord=None, y_coord=None, z_coord=None):
         "Позволяет заменить любую из координат или несколько. Указывать явно. НЕ ПРОВЕРЕННЫЙ МЕТОД."
@@ -47,24 +46,25 @@ class Point(object):
         parametr = first_sect + sec_sect + third_sect
         return (parametr / 2 * (parametr / 2 - first_sect) * (parametr / 2 - sec_sect) * (parametr / 2 - third_sect)) ** 0.5
     
-
+@total_ordering
 class Section(object):
     def __init__(self, point1=Point(), point2=Point()):
         self.point1 = point1
         self.point2 = point2
-    def __add__(self, other):
-        return self.point1.distance(self.point2) + other.point1.distance(other.point2)
-    def __str__(self):
+    def long_section(self):
         return self.point1.distance(self.point2)
+    def __add__(self, other):
+        return self.long_section() + other.long_section()
+    def __str__(self):
+        return self.long_section()
     def __sub__(self, other):
-        return self.point1.distance(self.point2) - other.point1.distance(other.point2)
-    
-class Directional_section(Section):
-    pass
-    
+        return self.long_section() - other.long_section()
+    def __eq__(self, other):
+        return self.long_section() == other.long_section()
+    def __lt__(self, other):
+        return self.long_section() < other.long_section()
 
-@total_ordering
-class Vector(object):
+class Directional_Section(Section):
     def __init__(self, point1=Point(), point2=Point()):
         self.point1 = point1
         self.point2 = point2
@@ -73,15 +73,9 @@ class Vector(object):
     def __add__(self, other):
         distance_1 = self.point2.coord_distance(other.point1)
         print(distance_1)
-        return Vector(self.point1, other.point2 + distance_1)
-    def long_vector(self):
-        return self.point1.distance(self.point2)
-    def __eq__(self, other):
-        return self.long_vector() == other.long_vector()
-    def __lt__(self, other):
-        return self.long_vector() < other.long_vector()
+        return Directional_Section(self.point1, other.point2.distance_increment(distance_1))
     def __neg__(self):
-        return Vector(self.point2, self.point1)
+        return Directional_Section(self.point2, self.point1)
     def __sub__(self, other):
         other = -other
         return self.__add__(other=other)
@@ -90,13 +84,17 @@ class Vector(object):
     def __mul__(self, other):
         if type(other) is int or float:
             distance_1 = tuple([item*other for item in self.point1.coord_distance(self.point2)])
-            return Vector(self.point1, self.point1 + distance_1)
+            return Directional_Section(self.point1, self.point1 + distance_1)
         else:
             pass
     def __truediv__(self, other):
         if type(other) is int or float:
             other = 1/other
             return self.__mul__(other=other)
+
+
+class Vector(object):
+    pass
                 
 
 # def decor_fract(func):
@@ -114,6 +112,6 @@ class Vector(object):
 #     EF = Vector(E, F)
 #     AD = Vector(A, D)
 #     vector_a = AB - CD
-#     print(AB + EF)
+    # print(AB + EF)
 
    
