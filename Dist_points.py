@@ -72,7 +72,6 @@ class Directional_Section(Section):
         return str(self.point1) + " - " + str(self.point2)
     def __add__(self, other):
         distance_1 = self.point2.coord_distance(other.point1)
-        print(distance_1)
         return Directional_Section(self.point1, other.point2.distance_increment(distance_1))
     def __neg__(self):
         return Directional_Section(self.point2, self.point1)
@@ -91,9 +90,11 @@ class Directional_Section(Section):
         if type(other) is int or float:
             other = 1/other
             return self.__mul__(other=other)
+    def equipollence(self, other):
+        return True if self.point1.coord_distance(self.point2) == other.point1.coord_distance(other.point2) else False
 
 
-class Vector(object):
+class Vector(Directional_Section):
     pass
                 
 
